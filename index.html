@@ -36,17 +36,19 @@
 
 <p>FreeBox is a device to crack WIFI. The hardware is mainly a Cubieboard2(with linux) and the software is based on the code from Reaver.</p>
 
+<p><img src="./free-box_raw.jpg" alt="pic"><img src="./me&amp;free-box_small.jpg" alt="pic"></p>
+
 <h2>
 <a name="how-is-it-going" class="anchor" href="#how-is-it-going"><span class="octicon octicon-link"></span></a>How is it going?</h2>
 
-<p>This project is divided into two stages. Now we are at the first phase.</p>
+<p>This project is divided into two stages. We just went through Stage1 successfully.</p>
 
 <h3>
 <a name="stage-1" class="anchor" href="#stage-1"><span class="octicon octicon-link"></span></a>Stage 1:</h3>
 
 <p>In this stage, our aim is to setup the building environment and to comfirm the viability. We do nothing but make existing projects functional. We would like to install Linux on cubieboard, update the kernel for the sake of experiment. Then we download, compile and install the aircrack-ng package and reaver package, and give those tools a try on Cubieboard.</p>
 
-<p>If you want to follow up with me, please check <a href="#Diaries">the diaries</a>. Later, when I complete the task successfully, the approaches will be documented.</p>
+<p>If you want to follow up with me, please check <a href="#How-to">here</a>. Later, when I complete the task successfully, the approaches will be documented.</p>
 
 <h3>
 <a name="stage-2" class="anchor" href="#stage-2"><span class="octicon octicon-link"></span></a>Stage 2:</h3>
@@ -57,6 +59,93 @@
 <a name="notice" class="anchor" href="#notice"><span class="octicon octicon-link"></span></a>Notice</h2>
 
 <p>It is <strong>illegal</strong> to crack other users' WIFI without permission!</p>
+
+<p></p>
+
+<h2>
+<a name="how-to" class="anchor" href="#how-to"><span class="octicon octicon-link"></span></a>How-to</h2>
+
+<h3>
+<a name="install-cubian" class="anchor" href="#install-cubian"><span class="octicon octicon-link"></span></a>Install Cubian</h3>
+
+<p>Download Cubian. Then make SDcard installation:</p>
+
+<pre><code>dd if=PATH_TO_CUBIAN of=/dev/YOUR_DEVICE bs=4096; sync
+</code></pre>
+
+<p>Be careful that YOUR_DEVICE is the root. I get <code>sdb</code> and <code>sdb0</code> in with <code>ls</code> in <code>dev</code> directory. <code>sdb</code> is the one, sdb0 is only one partition.</p>
+
+<p>After boot from SDcard, run the command below can install the system on NAND automatically.</p>
+
+<pre><code>sudo ~/nandinstall/install.sh
+</code></pre>
+
+<p>As the author of Cubian said, it is a good idea to keep Cubian up-to-date with command:</p>
+
+<pre><code>sudo cubian-update -v
+</code></pre>
+
+<p>However, error occurs in update process. I still miss some kernel headers to compile kernel modules.</p>
+
+<pre><code>sudo apt-get install linux-headers
+</code></pre>
+
+<p>There is no fit. I install a header that is newer than my kernel, then update my kernel.</p>
+
+<pre><code>sudo apt-get install linux-image
+</code></pre>
+
+<p>Done!</p>
+
+<h3>
+<a name="compule-aircrack-ng" class="anchor" href="#compule-aircrack-ng"><span class="octicon octicon-link"></span></a>Compule aircrack-ng</h3>
+
+<p>Check documentation INSTALLING about the requirements may save me a lot of time compiling the source code!</p>
+
+<h3>
+<a name="install-reaver" class="anchor" href="#install-reaver"><span class="octicon octicon-link"></span></a>Install Reaver</h3>
+
+<p>Reaver is ready contained by my distro source, to install:</p>
+
+<pre><code>sudo apt-get install reaver
+</code></pre>
+
+<h3>
+<a name="wireless-adaptor" class="anchor" href="#wireless-adaptor"><span class="octicon octicon-link"></span></a>Wireless Adaptor</h3>
+
+<p>We need a USB wireless adaptor to continue our work.</p>
+
+<p>If your wireless device is supported by the system, all you need to do is simply pluging in the device. Some of us will not be that lucky, they should build their own drivers. Just for your information, we have already known that adaptors using rtl8188eu are supported by Cubian currently but 9271 (e.g. TL-WN721N) are not. </p>
+
+<p>A safe way to compile a driver module is using the source tree. We recommand you to compile the source thuroughly if you are struggling problem with kenerl module versioning. BACK UP YOUR DATA BEFORE ACTION.</p>
+
+<p>Click here</p>
+
+<h3>
+<a name="wireless-adaptor-capacity" class="anchor" href="#wireless-adaptor-capacity"><span class="octicon octicon-link"></span></a>Wireless Adaptor Capacity</h3>
+
+<p>Not all adaptors are suitable for this job. We need those which can work in <code>Monitor Mode</code>. To test your adaptor, run:</p>
+
+<pre><code>iwlist
+</code></pre>
+
+<p>If the results contains <code>* Monitor</code>, that's it!</p>
+
+<p>FYI, to change mode, run <code>ifconfig wlan0 down</code> before running <code>iwconfig wlan0 mode monitor</code>, or the modification will fail. Then <code>ifconfig wlan0 up</code>. However, in  FreeBox, airmon-ng will do the job.</p>
+
+<h3>
+<a name="interactionoptional" class="anchor" href="#interactionoptional"><span class="octicon octicon-link"></span></a>Interaction(optional)</h3>
+
+<p>In stage 1, we don't have any interface to manipulate the device without a screen and a keyboard. To make the 'Box in Stage1' more playful, we plan to using an Android device to control it. It needs extra wireless adaptor. </p>
+
+<ul>
+<li>Have BusyBox and terminal-emulator installed in the Android.</li>
+<li>Setup HotPot in Android.</li>
+<li>Setup the extra adaptor, enabling it connect the hotpot automatically. Use static IP address.</li>
+<li>In the terminal-emulator, using ssh to connect cubieboard and the phone: <code>ssh cubie@&lt;IP Address&gt; -p 36000</code>
+</li>
+</ul><p>Well, now you can do some test, in everywhere :D
+</p>
         </section>
 
         <aside id="sidebar">
